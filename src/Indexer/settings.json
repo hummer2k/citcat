@@ -1,0 +1,27 @@
+{
+    "number_of_replicas": "0",
+    "mapping.total_fields.limit": "2000",
+    "analysis": {
+        "filter": {
+            "german_stop": {
+                "type":       "stop",
+                "stopwords":  "_german_"
+            },
+            "german_stemmer": {
+                "type":       "stemmer",
+                "language":   "light_german"
+            }
+        },
+        "analyzer": {
+            "rebuilt_german": {
+                "tokenizer":  "standard",
+                "filter": [
+                    "lowercase",
+                    "german_stop",
+                    "german_normalization",
+                    "german_stemmer"
+                ]
+            }
+        }
+    }
+}

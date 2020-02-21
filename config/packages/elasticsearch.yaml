@@ -1,0 +1,2 @@
+parameters:
+  elasticsearch.host: '%env(string:ELASTICSEARCH_HOST)%'

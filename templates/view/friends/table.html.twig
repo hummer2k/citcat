@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+<table>
+    <tbody>
+        {% for friend in friends %}
+        <tr>
+            <th rowspan="2">
+                {{ friend.name }}
+            </th>
+            <td>
+                @{{ friend.screenName }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                {{ friend.url }}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

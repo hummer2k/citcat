@@ -1,0 +1,5 @@
+parameters:
+    twitter.consumer_key: '%env(string:TWITTER_CONSUMER_KEY)%'
+    twitter.consumer_secret: '%env(string:TWITTER_CONSUMER_SECRET)%'
+    twitter.oauth_token: '%env(string:TWITTER_OAUTH_TOKEN)%'
+    twitter.oauth_token_secret: '%env(string:TWITTER_OAUTH_TOKEN_SECRET)%'

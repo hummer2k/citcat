@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+{{ parent() }}
+<link rel="stylesheet" href="/css/wordcloud.css" />
+{% endblock %}
+
+{% block content %}
+<div id="wordCloud"></div>
+
+<ol>
+    {% for word, count in wordCount %}
+        <li>{{ word }}: {{ count }}</li>
+    {% endfor %}
+</ol>
+{% endblock %}
+
+{% block javascripts %}
+
+    {{  parent() }}
+    <script src="/js/jQWCloudv3.1.js"></script>
+    <script>
+        jQuery(function($) {
+           $('#wordCloud').jQWCloud({
+               maxFont: 150,
+               minFont: 25,
+               words: {{ wordCloud|raw }}
+           })
+        });
+    </script>
+
+{% endblock %}

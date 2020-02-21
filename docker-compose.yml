@@ -1,0 +1,92 @@
+version: "3.0"
+
+services:
+
+  web:
+    image: httpd:2.4-alpine
+    volumes:
+      - ${SHARED_DIR}
+      - ./etc/apache/httpd.conf:/usr/local/apache2/conf/httpd.conf
+      - ./etc/apache/httpd-vhosts.conf:/usr/local/apache2/conf/extra/httpd-vhosts.conf
+    networks:
+      dockerdev-proxy:
+      default:
+        aliases:
+          - apache
+          - ${HOST}
+    environment:
+      VIRTUAL_HOST: ${HOST},${HOST_ALIASES}
+      HTTPS_METHOD: noredirect
+    expose:
+      - ${PORT_WEB}
+
+  elasticsearch:
+    build: ./etc/elasticsearch
+    volumes:
+      - ./var/vol/elasticsearch:/usr/share/elasticsearch/data
+    environment:
+      - xpack.security.enabled=false
+      - discovery.type=single-node
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.3.2
+    ports:
+      - 5601:5601
+
+  db:
+    image: mariadb:10.2
+    volumes:
+      - ${SHARED_DIR}
+      - ./var/vol/db:/var/lib/mysql
+      - ./files/db:/docker-entrypoint-initdb.d
+      - ./etc/db/mysql.cnf:/etc/mysql/mysql.cnf
+    working_dir: ${WORKING_DIR}
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: twitter
+    ports:
+      - 3307:3306
+
+  php:
+    build: ./etc/php
+    user: ${FIXUID:-1000}:${FIXGID:-1000}
+    volumes:
+      - ${SHARED_DIR}
+      - ./etc/php/settings.ini:/usr/local/etc/php/conf.d/z-settings.ini
+      - ~/.composer:/composer
+    working_dir: ${WORKING_DIR}
+    environment:
+      COMPOSER_HOME: /composer
+
+  php-debug:
+    build:
+      context: ./etc/php
+      args:
+        BASE_IMAGE: chialab/php-dev:7.2-fpm
+    user: ${FIXUID:-1000}:${FIXGID:-1000}
+    volumes:
+      - ${SHARED_DIR}
+      - ./etc/php/settings.ini:/usr/local/etc/php/conf.d/z-settings.ini
+      - ./etc/php/phpd:/usr/local/bin/phpd
+      - ~/.composer:/composer
+    working_dir: ${WORKING_DIR}
+    environment:
+      COMPOSER_HOME: /composer
+      PHP_IDE_CONFIG: serverName=${HOST}
+
+  # PHPMYADMIN
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOSTS: db
+      PMA_USER: root
+      PMA_PASSWORD: ${DB_ROOT_PASSWORD}
+    volumes:
+      - ./var/vol/phpmyadmin/sessions:/sessions
+    ports:
+      - 8801:80
+
+# NETWORKS
+networks:
+  dockerdev-proxy:
+    external: true
