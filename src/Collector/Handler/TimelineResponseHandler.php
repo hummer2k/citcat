@@ -8,7 +8,7 @@
 
 namespace App\Collector\Handler;
 
-
+use App\Helper\CollectHelper;
 use App\Repository\TweetRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -40,13 +40,20 @@ class TimelineResponseHandler
     private $maxRequestInterval = 600;
 
     /**
+     * @var CollectHelper
+     */
+    private $collectHelper;
+
+    /**
      * SearchResponseHandler constructor.
      * @param TweetRepository $tweetRepository
+     * @param CollectHelper $collectHelper
      */
-    public function __construct(TweetRepository $tweetRepository)
+    public function __construct(TweetRepository $tweetRepository, CollectHelper $collectHelper)
     {
         $this->tweetRepository = $tweetRepository;
         $this->requestInterval = $this->defaultRequestInterval;
+        $this->collectHelper = $collectHelper;
     }
 
     /**
@@ -80,7 +87,13 @@ class TimelineResponseHandler
         }
 
         for ($i = $this->requestInterval; $i > 0; $i--) {
-            $output->write(sprintf('Try again in %d seconds', $i) . "\r");
+            $output->write(
+                sprintf(
+                    'Try again in %d seconds, Memory usage: %s',
+                    $i,
+                    $this->collectHelper->formatBytes(memory_get_usage(true))
+                ) . "\t\t\r"
+            );
             sleep(1);
         }
     }

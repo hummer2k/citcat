@@ -215,6 +215,9 @@
     "symfony/http-kernel": {
         "version": "v4.2.7"
     },
+    "symfony/lock": {
+        "version": "v4.2.12"
+    },
     "symfony/orm-pack": {
         "version": "v1.0.6"
     },

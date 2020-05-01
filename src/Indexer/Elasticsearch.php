@@ -46,22 +46,23 @@ class Elasticsearch
         $this->objectManager = $objectManager;
     }
 
-    public function reindex(OutputInterface $output)
+    /**
+     * @param OutputInterface $output
+     * @param array|null|Tweet[] $tweets
+     */
+    public function reindex(OutputInterface $output, ?array $tweets = null)
     {
-        $criteria = function (QueryBuilder $queryBuilder) {
-            $queryBuilder->where('t.isDeleted = 0');
-        };
-        $tweets = $this->tweetRepository->getTweetIterator($criteria);
-
-        $count = $this->tweetRepository->count(['isDeleted' => 0]);
+        $count  = $tweets ? count($tweets) : $this->tweetRepository->count([]);
+        $tweets = $tweets ?: $this->tweetRepository->getTweetIterator();
 
         $bulkSize = 500;
         $i = 1;
 
-        $indexName = 'tweets_' . date('Y_m_d__H_i_s');
-        $index = $this->client->getIndex($indexName);
+        $index = $this->client->getIndex(static::INDEX_ALIAS);
 
-        $index->create();
+        if (!$index->exists()) {
+            $index->create();
+        }
 
         $mappingDefinition = json_decode(file_get_contents(__DIR__ . '/mapping.json'), true);
         $mapping = new Mapping();
@@ -81,8 +82,15 @@ class Elasticsearch
         $progress = new ProgressBar($output, $count);
         $progress->display();
         foreach ($tweets as $tweetRow) {
-            /** @var Tweet $tweet */
-            $tweet = $tweetRow[0];
+            if (is_array($tweetRow)) {
+                /** @var Tweet $tweet */
+                $tweet = $tweetRow[0];
+            } elseif ($tweetRow instanceof Tweet) {
+                $tweet = $tweetRow;
+            } else {
+                continue;
+            }
+
             $rawData = $tweet->getRawData();
             $documents[]  = new Document($tweet->getId(), $rawData);
 
@@ -103,8 +111,8 @@ class Elasticsearch
 
         $progress->finish();
 
+        $output->writeln('');
         $output->writeln('Refreshing index...');
-        $index->addAlias(static::INDEX_ALIAS, true);
         $index->refresh();
     }
 }

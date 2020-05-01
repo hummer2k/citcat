@@ -42,6 +42,12 @@ class CollectTimelineCommand extends Command
             InputOption::VALUE_OPTIONAL,
             'Returns results with an ID less than (that is, older than) or equal to the specified ID.'
         );
+        $this->addOption(
+            'memory_limit',
+            null,
+            InputOption::VALUE_OPTIONAL,
+            'Shutdown on given memory limit in bytes'
+        );
     }
 
     /**
@@ -53,10 +59,7 @@ class CollectTimelineCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $params = [];
-        if ($maxId = $input->getOption('max_id')) {
-            $params['max_id'] = $maxId;
-        }
+        $params = $input->getOptions();
         $this->timelineCollector->collect($output, $params);
     }
 }

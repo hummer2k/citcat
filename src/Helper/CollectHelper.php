@@ -8,7 +8,6 @@
 
 namespace App\Helper;
 
-
 use Symfony\Component\Console\Output\OutputInterface;
 
 class CollectHelper
@@ -43,7 +42,7 @@ class CollectHelper
             $nextUser = $friends[$i + 1] ?? false;
 
             if ($nextUser) {
-                 $length += strlen('from:' . $nextUser->screen_name);
+                $length += strlen('from:' . $nextUser->screen_name);
             }
 
             if ($length > $queryLimit || $i >= $userCount - 1) {
@@ -53,6 +52,18 @@ class CollectHelper
         }
 
         return $queries;
+    }
+
+    /**
+     * @param $bytes
+     * @param int $precision
+     * @return string
+     */
+    public function formatBytes($bytes, $precision = 2) : string
+    {
+        $unit = ['B', 'KB', 'MB', 'GB'];
+        $exp = floor(log($bytes, 1024)) | 0;
+        return round($bytes / (pow(1024, $exp)), $precision) . $unit[$exp];
     }
 
     /**

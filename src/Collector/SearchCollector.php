@@ -7,6 +7,7 @@ use App\Helper\CollectHelper;
 use App\Repository\TweetRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class SearchCollector implements CollectorInterface
@@ -57,6 +58,9 @@ class SearchCollector implements CollectorInterface
         $oldTweetCount = $this->tweetRepository->count([]);
         $output->writeln(sprintf('Start collecting tweets of %d followers', count($friends->users)));
         $current = 1;
+
+        $progressBar = new ProgressBar($output, count($queries));
+
         foreach ($queries as $query) {
 
             $mergedParams = array_merge([
@@ -70,7 +74,7 @@ class SearchCollector implements CollectorInterface
             $page = 1;
             do {
 
-                $output->write(sprintf("Fetching tweets... Query: %d / %d, Page: %d\r", $current, count($queries), $page));
+                $progressBar->setMessage(sprintf('Page: %d', $page));
                 $response = $this->twitterOAuth->get('search/tweets', $mergedParams);
 
                 if (isset($response->errors)) {
@@ -90,7 +94,11 @@ class SearchCollector implements CollectorInterface
 
             } while (isset($response->search_metadata->next_results));
             $current++;
+
+            $progressBar->advance();
         }
+
+        $progressBar->finish();
 
         $insertedTweetCount = $this->tweetRepository->count([]) - $oldTweetCount;
 

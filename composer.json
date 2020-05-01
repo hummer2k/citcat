@@ -14,11 +14,13 @@
         "symfony/dotenv": "4.2.*",
         "symfony/flex": "^1.1",
         "symfony/framework-bundle": "4.2.*",
+        "symfony/lock": "4.2.*",
         "symfony/orm-pack": "^1.0",
         "symfony/serializer": "4.2.*",
         "symfony/twig-bundle": "4.2.*",
         "symfony/yaml": "4.2.*",
-        "zendframework/zend-hydrator": "^3.0"
+        "zendframework/zend-hydrator": "^3.0",
+        "ext-json": "*"
     },
     "prefer-stable": true,
     "minimum-stability": "dev",
