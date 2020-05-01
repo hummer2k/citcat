@@ -10,6 +10,8 @@ namespace App\Collector\Handler;
 
 
 use App\Repository\TweetRepository;
+use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use stdClass;
