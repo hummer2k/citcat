@@ -37,11 +37,17 @@ class CollectHelper
 
         $currentQuery = '';
         $userCount = count($friends);
-        foreach ($friends as $i => $user) {
-            $currentQuery .= 'from:' . $user->screen_name . ' OR ';
-            if (strlen($currentQuery) >= $queryLimit + 4 || $i >= $userCount - 1) {
-                $normalizedQuery = substr($currentQuery, 0, strpos($currentQuery, 'from:' . $user->screen_name) - 4);
-                $queries[] = $normalizedQuery;
+        foreach ($friends as $i => $currentUser) {
+            $currentQuery .= 'from:' . $currentUser->screen_name . ' OR ';
+            $length = strlen($currentQuery);
+            $nextUser = $friends[$i + 1] ?? false;
+
+            if ($nextUser) {
+                 $length += strlen('from:' . $nextUser->screen_name);
+            }
+
+            if ($length > $queryLimit || $i >= $userCount - 1) {
+                $queries[] = substr($currentQuery, 0, -4);
                 $currentQuery = '';
             }
         }

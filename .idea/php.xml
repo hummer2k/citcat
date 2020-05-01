@@ -74,6 +74,7 @@
       <path value="$PROJECT_DIR$/vendor/fennb/phirehose" />
       <path value="$PROJECT_DIR$/vendor/spatie/twitter-streaming-api" />
       <path value="$PROJECT_DIR$/vendor/ruflin/elastica" />
+      <path value="$PROJECT_DIR$/vendor/symfony/phpunit-bridge" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.2" />

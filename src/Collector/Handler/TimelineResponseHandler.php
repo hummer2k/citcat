@@ -78,7 +78,7 @@ class TimelineResponseHandler
         }
 
         for ($i = $this->requestInterval; $i > 0; $i--) {
-            $output->write(sprintf('Trying again in %d seconds', $i) . "\r");
+            $output->write(sprintf('Try again in %d seconds', $i) . "\r");
             sleep(1);
         }
     }
