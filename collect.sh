@@ -4,7 +4,7 @@ docker-compose up -d
 
 if [ "$1" = "timeline" ]
 then
-    docker-compose exec -T php bin/console twitter:collect:timeline
+    docker-compose exec -T php bin/console twitter:collect:timeline -q
 else
     docker-compose exec -T php bin/console twitter:collect:search --result_type=mixed
     docker-compose exec -T php bin/console twitter:collect:search --result_type=recent
