@@ -70,7 +70,7 @@ class TimelineResponseHandler
                 $output->writeln(sprintf('<error>%s (Code: %d)</error>', $error->message, $error->code));
             }
         } elseif (empty($response)) {
-            $this->calculateNextRequestInterval(1.5);
+            $this->calculateNextRequestInterval(1.1);
             $output->writeln('<comment>No tweets found</comment>');
         } else {
             $currentTweetCount = $this->tweetRepository->count([]);
@@ -82,7 +82,7 @@ class TimelineResponseHandler
                 $this->resetRequestInterval();
             } else {
                 $output->writeln('<comment>No tweets found</comment>');
-                $this->calculateNextRequestInterval(1.5);
+                $this->calculateNextRequestInterval(1.1);
             }
         }
 
