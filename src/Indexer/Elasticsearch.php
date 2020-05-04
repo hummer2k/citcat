@@ -48,9 +48,9 @@ class Elasticsearch
 
     /**
      * @param OutputInterface $output
-     * @param array|null|Tweet[] $tweets
+     * @param iterable|null|Tweet[] $tweets
      */
-    public function reindex(OutputInterface $output, ?array $tweets = null)
+    public function reindex(OutputInterface $output, $tweets = null)
     {
         $count  = $tweets ? count($tweets) : $this->tweetRepository->count([]);
         $tweets = $tweets ?: $this->tweetRepository->getTweetIterator();

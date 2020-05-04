@@ -9,6 +9,7 @@ use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 class SearchCollector implements CollectorInterface
 {
@@ -51,7 +52,6 @@ class SearchCollector implements CollectorInterface
      */
     public function collect(OutputInterface $output = null, array $params = [])
     {
-
         $friends = $this->getFriends();
         $queries = $this->helper->generateFromQueries($friends->users);
 
@@ -60,6 +60,7 @@ class SearchCollector implements CollectorInterface
         $current = 1;
 
         $progressBar = new ProgressBar($output, count($queries));
+        $progressBar->display();
 
         foreach ($queries as $query) {
 
