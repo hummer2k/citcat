@@ -29,6 +29,7 @@
             <th>Link</th>
             <th>Likes</th>
             <th>Retweets</th>
+            <th>Aktualisiert</th>
         </tr>
     </thead>
     <tbody>
@@ -38,10 +39,11 @@
             <td>{{ tweet.screenName }}</td>
             <td>{{ tweet.isRetweet ? 'ja' : 'nein' }}</td>
             <td>{{ tweet.isRetweet ? tweet.rawData.retweeted_status.full_text : tweet.rawData.full_text }}</td>
-            <td data-sort="{{ tweet.createdAt|date('Y-m-d H:i:s') }}">{{ tweet.createdAt|date('d.m.Y H:i:s') }}</td>
+            <td data-sort="{{ tweet.createdAt|date('Y-m-d H:i:s') }}">{{ tweet.createdAt|date('d.m.Y H:i:s', 'Europe/Berlin') }}</td>
             <td><a href="{{ tweet.url }}" target="_blank">{{ tweet.url }}</a></td>
             <td>{{ tweet.isRetweet ? tweet.rawData.retweeted_status.favorite_count : tweet.rawData.favorite_count }}</td>
             <td>{{ tweet.isRetweet ? tweet.rawData.retweeted_status.retweet_count : tweet.rawData.retweet_count }}</td>
+            <td data-sort="{{ tweet.updatedAt|date('Y-m-d H:i:s') }}">{{ tweet.updatedAt|date('d.m.Y H:i:s', 'Europe/Berlin')  }}</td>
         </tr>
         {% endfor %}
     </tbody>

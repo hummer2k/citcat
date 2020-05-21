@@ -60,6 +60,7 @@ class TweetRepository extends ServiceEntityRepository
                 }
             }
             $tweet->setRawData($rawData->all());
+            $tweet->updatedTimestamps();
         }
         $this->getEntityManager()->flush();
         $this->getEntityManager()->clear();

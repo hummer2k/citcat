@@ -33,6 +33,13 @@ class Tweet implements ArraySerializableInterface
     /**
      * @var \DateTime
      *
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
+     */
+    private $updatedAt;
+
+    /**
+     * @var \DateTime
+     *
      * @ORM\Column(name="created_at", type="datetime", nullable=false)
      */
     private $createdAt;
@@ -91,9 +98,11 @@ class Tweet implements ArraySerializableInterface
 
     /**
      * @ORM\PrePersist
+     * @ORM\PreUpdate
      */
     public function updatedTimestamps(): void
     {
+        $this->setUpdatedAt(new \DateTime('now', new \DateTimeZone('UTC')));
         if ($this->getInsertedAt() === null) {
             $this->setInsertedAt(new \DateTime('now', new \DateTimeZone('UTC')));
         }
@@ -302,5 +311,24 @@ class Tweet implements ArraySerializableInterface
         foreach ($categories as $category) {
             $this->categories->add($category);
         }
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getUpdatedAt(): ?\DateTime
+    {
+        if (null === $this->updatedAt) {
+            return $this->insertedAt;
+        }
+        return $this->updatedAt;
+    }
+
+    /**
+     * @param \DateTime $updatedAt
+     */
+    public function setUpdatedAt(\DateTime $updatedAt): void
+    {
+        $this->updatedAt = $updatedAt;
     }
 }

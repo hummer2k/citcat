@@ -7,6 +7,7 @@
 namespace App\Console\Command;
 
 use Abraham\TwitterOAuth\TwitterOAuth;
+use App\Entity\Category;
 use App\Entity\Tweet;
 use App\Repository\CategoryRepository;
 use App\Repository\TweetRepository;
@@ -64,38 +65,26 @@ class UpdateTweetsCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $category = null;
-        $criteria = [];
         if ($categoryId = $input->getOption('category-id')) {
+            /** @var Category $category */
             $category = $this->categoryRepository->find($categoryId);
-            $criteria = ['category' => $category];
+            $rows = $this->tweetRepository->findByCategory($category);
         }
 
         if ($tweetId = $input->getOption('tweet-id')) {
-            $criteria = ['id' => $tweetId];
+            $rows = $this->tweetRepository->findBy(['id' => $tweetId]);
         }
 
-        $iterator = $this->tweetRepository->getTweetIterator(function (QueryBuilder $qb) use ($category, $tweetId) {
-            if ($category) {
-                $qb->where($qb->expr()->eq('t.category', $categoryId));
-            }
-            if ($tweetId) {
-                $qb->where($qb->expr()->eq('t.id', $tweetId));
-            }
-            $qb->orderBy('t.id', 'DESC');
-        });
-
-        $count = $this->tweetRepository->count($criteria);
+        $count = count($rows);
         $batchSize = 100;
         $tweets = [];
 
         $progress = new ProgressBar($output);
         $progress->start($count);
 
-        foreach ($iterator as $row) {
-            /** @var Tweet $tweet */
-            $tweet = $row[0];
+        /** @var Tweet $tweet */
+        foreach ($rows as $tweet) {
             $tweets[$tweet->getId()] = $tweet;
-
             if (count($tweets) >= $batchSize) {
                 $this->processBatch($tweets);
                 $tweets = [];
