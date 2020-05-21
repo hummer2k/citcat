@@ -44,12 +44,13 @@ class Category extends AbstractController
             return $this->render('view/categories.html.twig', ['categories' => $categories]);
         }
 
+        /** @var \App\Entity\Category $category */
         $category   = $this->categoryRepository->find($categoryId);
-        $tweets     = $this->tweetRepository->findBy(['category' => $category]);
+        $tweets     = $this->tweetRepository->findByCategory($category);
 
         return $this->render('view/category.html.twig', [
             'categories' => $categories,
-            'category' => $category,
+            'currentCategory' => $category,
             'tweets' => $tweets
         ]);
     }

@@ -74,8 +74,8 @@ class UpdateTweetsCommand extends Command
             $criteria = ['id' => $tweetId];
         }
 
-        $iterator = $this->tweetRepository->getTweetIterator(function (QueryBuilder $qb) use ($categoryId, $tweetId) {
-            if ($categoryId) {
+        $iterator = $this->tweetRepository->getTweetIterator(function (QueryBuilder $qb) use ($category, $tweetId) {
+            if ($category) {
                 $qb->where($qb->expr()->eq('t.category', $categoryId));
             }
             if ($tweetId) {

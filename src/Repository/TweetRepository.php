@@ -2,6 +2,7 @@
 namespace App\Repository;
 
 use Adbar\Dot;
+use App\Entity\Category;
 use App\Entity\Tweet;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -93,5 +94,13 @@ class TweetRepository extends ServiceEntityRepository
             $predicate($qb);
         }
         return $qb->getQuery()->iterate();
+    }
+
+    public function findByCategory(Category $category)
+    {
+        $qb = $this->createQueryBuilder('t');
+        $qb->where(':category MEMBER OF t.categories')
+            ->setParameter('category', $category);
+        return $qb->getQuery()->getResult();
     }
 }

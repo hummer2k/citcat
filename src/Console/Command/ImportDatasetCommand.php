@@ -89,7 +89,7 @@ class ImportDatasetCommand extends Command
                 $output->writeln('<comment>' . $tweetId . ' not found in database.</comment>');
                 continue;
             }
-            $tweet->setCategory($category);
+            $tweet->addCategory($category);
         }
         $this->objectManager->flush();
     }

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Zend\Stdlib\ArraySerializableInterface;
 
@@ -77,25 +78,15 @@ class Tweet implements ArraySerializableInterface
     private $isDeleted = false;
 
     /**
-     * @var Category
-     * @ORM\ManyToOne(targetEntity="App\Entity\Category")
+     * @var Category[]
+     * @ORM\ManyToMany(targetEntity="App\Entity\Category")
+     * @ORM\JoinTable(name="tweet_category")
      */
-    private $category;
+    private $categories;
 
-    /**
-     * @return Category
-     */
-    public function getCategory(): Category
+    public function __construct()
     {
-        return $this->category;
-    }
-
-    /**
-     * @param Category $category
-     */
-    public function setCategory(Category $category): void
-    {
-        $this->category = $category;
+        $this->categories = new ArrayCollection();
     }
 
     /**
@@ -283,5 +274,33 @@ class Tweet implements ArraySerializableInterface
     public function getUrl()
     {
         return 'https://twitter.com/' . $this->getScreenName() . '/status/' . $this->getId();
+    }
+
+    /**
+     * @return Category[]
+     */
+    public function getCategories(): iterable
+    {
+        return $this->categories;
+    }
+
+    /**
+     * @param Category $category
+     */
+    public function addCategory(Category $category)
+    {
+        if (!$this->categories->contains($category)) {
+            $this->categories->add($category);
+        }
+    }
+
+    /**
+     * @param Category[] $categories
+     */
+    public function setCategories(iterable $categories): void
+    {
+        foreach ($categories as $category) {
+            $this->categories->add($category);
+        }
     }
 }
