@@ -77,6 +77,28 @@ class Tweet implements ArraySerializableInterface
     private $isDeleted = false;
 
     /**
+     * @var Category
+     * @ORM\ManyToOne(targetEntity="App\Entity\Category")
+     */
+    private $category;
+
+    /**
+     * @return Category
+     */
+    public function getCategory(): Category
+    {
+        return $this->category;
+    }
+
+    /**
+     * @param Category $category
+     */
+    public function setCategory(Category $category): void
+    {
+        $this->category = $category;
+    }
+
+    /**
      * @ORM\PrePersist
      */
     public function updatedTimestamps(): void
@@ -256,5 +278,10 @@ class Tweet implements ArraySerializableInterface
     public function setIsDeleted(bool $isDeleted): void
     {
         $this->isDeleted = $isDeleted;
+    }
+
+    public function getUrl()
+    {
+        return 'https://twitter.com/' . $this->getScreenName() . '/status/' . $this->getId();
     }
 }

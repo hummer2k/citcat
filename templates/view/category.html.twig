@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ category.name }}{% endblock %}
+
+{% block nav %}
+    {{ parent() }}
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Datensätze
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            {% for category in categories %}
+            <a class="dropdown-item" href="/?category_id={{ category.id }}">{{ category.name }}</a>
+            {% endfor %}
+        </div>
+    </li>
+{% endblock %}
+
+{% block content %}
+<h1 class="display-4 border-bottom mb-4">{{ category.name }}</h1>
+<table class="table table-condensed table-hover">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Retweet</th>
+            <th>Text</th>
+            <th>Datum</th>
+            <th>Link</th>
+            <th>Likes</th>
+            <th>Retweets</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for tweet in tweets %}
+        <tr>
+            <td>{{ tweet.id }}</td>
+            <td>{{ tweet.screenName }}</td>
+            <td>{{ tweet.isRetweet ? 'ja' : 'nein' }}</td>
+            <td>{{ tweet.isRetweet ? tweet.rawData.retweeted_status.full_text : tweet.rawData.full_text }}</td>
+            <td data-sort="{{ tweet.createdAt|date('Y-m-d H:i:s') }}">{{ tweet.createdAt|date('d.m.Y H:i:s') }}</td>
+            <td><a href="{{ tweet.url }}" target="_blank">{{ tweet.url }}</a></td>
+            <td>{{ tweet.isRetweet ? tweet.rawData.retweeted_status.favorite_count : tweet.rawData.favorite_count }}</td>
+            <td>{{ tweet.isRetweet ? tweet.rawData.retweeted_status.retweet_count : tweet.rawData.retweet_count }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        (function($) {
+            $('.table').DataTable();
+        })(jQuery);
+    </script>
+{% endblock %}

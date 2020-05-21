@@ -5,7 +5,9 @@
         "php": "^7.2",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "ext-json": "*",
         "abraham/twitteroauth": "^1.0",
+        "adbario/php-dot-notation": "^2.2",
         "fennb/phirehose": "dev-master",
         "ruflin/elastica": "^7.0",
         "spatie/twitter-streaming-api": "^1.4",
@@ -19,8 +21,7 @@
         "symfony/serializer": "4.2.*",
         "symfony/twig-bundle": "4.2.*",
         "symfony/yaml": "4.2.*",
-        "zendframework/zend-hydrator": "^3.0",
-        "ext-json": "*"
+        "zendframework/zend-hydrator": "^3.0"
     },
     "prefer-stable": true,
     "minimum-stability": "dev",

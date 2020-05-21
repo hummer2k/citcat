@@ -1,6 +1,7 @@
 <?php
 namespace App\Repository;
 
+use Adbar\Dot;
 use App\Entity\Tweet;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -29,6 +30,35 @@ class TweetRepository extends ServiceEntityRepository
             $tweet = $this->find($tweetData->id) ?: new Tweet();
             $tweet->exchangeArray((array) $tweetData);
             $this->getEntityManager()->persist($tweet);
+        }
+        $this->getEntityManager()->flush();
+        $this->getEntityManager()->clear();
+    }
+
+    /**
+     * @param array $tweets
+     * @param array $fields
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws \Doctrine\Common\Persistence\Mapping\MappingException
+     */
+    public function updateBulk(array $tweets, array $fields = [])
+    {
+        foreach ($tweets as $tweetData) {
+            /** @var Tweet $tweet */
+            $tweet = $this->find($tweetData['id']);
+            if (!$tweet) {
+                continue;
+            }
+            $tweetData = new Dot($tweetData);
+            $rawData = new Dot($tweet->getRawData());
+
+            foreach ($fields as $field) {
+                if ($rawData->has($field) && $tweetData->has($field)) {
+                    $rawData->set($field, $tweetData->get($field));
+                }
+            }
+            $tweet->setRawData($rawData->all());
         }
         $this->getEntityManager()->flush();
         $this->getEntityManager()->clear();
