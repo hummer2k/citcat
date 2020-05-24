@@ -23,6 +23,10 @@
             "type": "geo_shape",
             "coerce": true,
             "ignore_malformed": true
+        },
+        "full_text": {
+            "type": "text",
+            "analyzer": "standard"
         }
     }
 }

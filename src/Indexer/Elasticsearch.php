@@ -92,6 +92,11 @@ class Elasticsearch
             }
 
             $rawData = $tweet->getRawData();
+            $rawData['url'] = sprintf(
+                'https://twitter.com/%s/status/%s',
+                $rawData['user']['screen_name'],
+                $rawData['id_str']
+            );
             $documents[]  = new Document($tweet->getId(), $rawData);
 
             if ($i % $bulkSize === 0) {
