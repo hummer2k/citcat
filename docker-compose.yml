@@ -9,16 +9,15 @@ services:
       - ./etc/apache/httpd.conf:/usr/local/apache2/conf/httpd.conf
       - ./etc/apache/httpd-vhosts.conf:/usr/local/apache2/conf/extra/httpd-vhosts.conf
     networks:
-      dockerdev-proxy:
       default:
         aliases:
           - apache
           - ${HOST}
     environment:
-      VIRTUAL_HOST: ${HOST},${HOST_ALIASES}
+      VIRTUAL_HOST: ${HOST}
       HTTPS_METHOD: noredirect
     expose:
-      - ${PORT_WEB}
+      - 80
 
   elasticsearch:
     build: ./etc/elasticsearch
@@ -30,8 +29,11 @@ services:
 
   kibana:
     image: docker.elastic.co/kibana/kibana:7.3.2
-    ports:
-      - 5601:5601
+    expose:
+      - 5601
+    environment:
+      VIRTUAL_PORT: 5601
+      VIRTUAL_HOST: kibana.${HOST}
 
   db:
     image: mariadb:10.2
@@ -44,8 +46,6 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_DATABASE: twitter
-    ports:
-      - 3307:3306
 
   php:
     build: ./etc/php
@@ -79,14 +79,8 @@ services:
     image: phpmyadmin/phpmyadmin
     environment:
       PMA_HOSTS: db
-      PMA_USER: root
-      PMA_PASSWORD: ${DB_ROOT_PASSWORD}
+      VIRTUAL_HOST: pma.${HOST}
     volumes:
       - ./var/vol/phpmyadmin/sessions:/sessions
-    ports:
-      - 8801:80
-
-# NETWORKS
-networks:
-  dockerdev-proxy:
-    external: true
+    expose:
+      - 80

@@ -1,0 +1,20 @@
+# Example override for Linux
+version: "3"
+services:
+  web:
+    networks:
+      nginx-proxy:
+
+  kibana:
+    networks:
+      nginx-proxy:
+      default:
+
+  phpmyadmin:
+    networks:
+      nginx-proxy:
+      default:
+
+networks:
+  nginx-proxy:
+    external: true

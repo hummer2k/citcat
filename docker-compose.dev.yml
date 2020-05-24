@@ -1,0 +1,29 @@
+# Example override for Linux
+version: "3"
+services:
+
+  web:
+    networks:
+      dockerdev-proxy:
+
+  kibana:
+    networks:
+      dockerdev-proxy:
+      default:
+
+  phpmyadmin:
+    networks:
+      dockerdev-proxy:
+      default:
+    environment:
+      PMA_USER: root
+      PMA_PASSWORD: ${DB_ROOT_PASSWORD}
+
+  php-debug:
+    volumes:
+      - ./etc/php/linux/settings.ini:/usr/local/etc/php/conf.d/zz-settings.ini
+      - ./etc/php/linux/phpd:/usr/local/bin/phpd
+
+networks:
+  dockerdev-proxy:
+    external: true

@@ -1,7 +1,0 @@
-# Example override for Linux
-version: "3"
-services:
-  php-debug:
-    volumes:
-      - ./etc/php/linux/settings.ini:/usr/local/etc/php/conf.d/zz-settings.ini
-      - ./etc/php/linux/phpd:/usr/local/bin/phpd
