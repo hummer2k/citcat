@@ -58,22 +58,6 @@ services:
     environment:
       COMPOSER_HOME: /composer
 
-  php-debug:
-    build:
-      context: ./etc/php
-      args:
-        BASE_IMAGE: chialab/php-dev:7.2-fpm
-    user: ${FIXUID:-1000}:${FIXGID:-1000}
-    volumes:
-      - ${SHARED_DIR}
-      - ./etc/php/settings.ini:/usr/local/etc/php/conf.d/z-settings.ini
-      - ./etc/php/phpd:/usr/local/bin/phpd
-      - ~/.composer:/composer
-    working_dir: ${WORKING_DIR}
-    environment:
-      COMPOSER_HOME: /composer
-      PHP_IDE_CONFIG: serverName=${HOST}
-
   # PHPMYADMIN
   phpmyadmin:
     image: phpmyadmin/phpmyadmin

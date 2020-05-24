@@ -27,6 +27,10 @@ services:
         resource: '../src/Console/Command'
         tags: ['console.command']
 
+    App\Indexer\IndexTweetSubscriber:
+        tags:
+            - { name: doctrine.event_subscriber }
+
     Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter: '@serializer.name_converter.camel_case_to_snake_case'
     Zend\Hydrator\ClassMethodsHydrator: ~
     Zend\Hydrator\HydratorInterface: '@Zend\Hydrator\ClassMethodsHydrator'

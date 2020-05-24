@@ -67,6 +67,15 @@ class CollectHelper
     }
 
     /**
+     * @param $tweetData
+     * @return array
+     */
+    public function normalizeTweetData($tweetData): array
+    {
+        return \json_decode(\json_encode($tweetData), true);
+    }
+
+    /**
      * @param array $errors
      * @param OutputInterface $output
      */

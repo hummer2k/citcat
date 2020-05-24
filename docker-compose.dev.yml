@@ -20,9 +20,20 @@ services:
       PMA_PASSWORD: ${DB_ROOT_PASSWORD}
 
   php-debug:
+    build:
+      context: ./etc/php
+      args:
+        BASE_IMAGE: chialab/php-dev:7.2-fpm
+    user: ${FIXUID:-1000}:${FIXGID:-1000}
     volumes:
+      - ${SHARED_DIR}
       - ./etc/php/linux/settings.ini:/usr/local/etc/php/conf.d/zz-settings.ini
       - ./etc/php/linux/phpd:/usr/local/bin/phpd
+      - ~/.composer:/composer
+    working_dir: ${WORKING_DIR}
+    environment:
+      COMPOSER_HOME: /composer
+      PHP_IDE_CONFIG: serverName=${HOST}
 
 networks:
   dockerdev-proxy:

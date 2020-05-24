@@ -246,9 +246,9 @@ class Tweet implements ArraySerializableInterface
     {
         $this->setId($tweetData['id']);
         $this->setCreatedAt(new \DateTime($tweetData['created_at']));
-        $this->setUserId($tweetData['user']->id);
-        $this->setScreenName($tweetData['user']->screen_name);
-        $isRetweet = isset($tweetData['retweeted_status']->full_text);
+        $this->setUserId($tweetData['user']['id']);
+        $this->setScreenName($tweetData['user']['screen_name']);
+        $isRetweet = isset($tweetData['retweeted_status']['full_text']);
         $this->setIsRetweet($isRetweet);
         $this->setContent($tweetData['full_text']);
         $this->setRawData($tweetData);

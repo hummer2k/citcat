@@ -4,6 +4,7 @@ namespace App\Repository;
 use Adbar\Dot;
 use App\Entity\Category;
 use App\Entity\Tweet;
+use App\Helper\CollectHelper;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\Internal\Hydration\IterableResult;
@@ -13,9 +14,15 @@ use Doctrine\ORM\ORMException;
 
 class TweetRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry, $entityClass = Tweet::class)
+    /**
+     * @var CollectHelper
+     */
+    private $collectHelper;
+
+    public function __construct(ManagerRegistry $registry, CollectHelper $collectHelper, $entityClass = Tweet::class)
     {
         parent::__construct($registry, $entityClass);
+        $this->collectHelper = $collectHelper;
     }
 
     /**
@@ -27,9 +34,10 @@ class TweetRepository extends ServiceEntityRepository
     public function saveBulk(array $tweets)
     {
         foreach ($tweets as $tweetData) {
+            $tweetData = $this->collectHelper->normalizeTweetData($tweetData);
             /** @var Tweet $tweet */
-            $tweet = $this->find($tweetData->id) ?: new Tweet();
-            $tweet->exchangeArray((array) $tweetData);
+            $tweet = $this->find($tweetData['id']) ?: new Tweet();
+            $tweet->exchangeArray($tweetData);
             $this->getEntityManager()->persist($tweet);
         }
         $this->getEntityManager()->flush();

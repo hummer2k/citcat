@@ -47,6 +47,32 @@ class Elasticsearch
     }
 
     /**
+     * @param Tweet $tweet
+     * @return \Elastica\Bulk\ResponseSet
+     */
+    public function reindexEntity(Tweet $tweet)
+    {
+        $index = $this->client->getIndex(static::INDEX_ALIAS);
+        $document = $this->createDocument($tweet);
+        return $index->addDocuments([$document]);
+    }
+
+    /**
+     * @param Tweet $tweet
+     * @return Document
+     */
+    private function createDocument(Tweet $tweet): Document
+    {
+        $rawData = $tweet->getRawData();
+        $rawData['url'] = sprintf(
+            'https://twitter.com/%s/status/%s',
+            $rawData['user']['screen_name'],
+            $rawData['id_str']
+        );
+        return new Document($tweet->getId(), $rawData);
+    }
+
+    /**
      * @param OutputInterface $output
      * @param iterable|null|Tweet[] $tweets
      */
@@ -91,13 +117,7 @@ class Elasticsearch
                 continue;
             }
 
-            $rawData = $tweet->getRawData();
-            $rawData['url'] = sprintf(
-                'https://twitter.com/%s/status/%s',
-                $rawData['user']['screen_name'],
-                $rawData['id_str']
-            );
-            $documents[]  = new Document($tweet->getId(), $rawData);
+            $documents[] = $this->createDocument($tweet);
 
             if ($i % $bulkSize === 0) {
                 $index->addDocuments($documents);
