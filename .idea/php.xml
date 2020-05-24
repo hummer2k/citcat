@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="BladeDebugConfiguration">
+    <cachePath />
+  </component>
   <component name="MessDetector">
     <phpmd_settings>
       <MessDetectorConfiguration tool_path="/usr/bin/phpmd" />
@@ -76,7 +79,11 @@
       <path value="$PROJECT_DIR$/vendor/ruflin/elastica" />
       <path value="$PROJECT_DIR$/vendor/symfony/phpunit-bridge" />
       <path value="$PROJECT_DIR$/vendor/symfony/lock" />
+      <path value="$PROJECT_DIR$/vendor/adbario/php-dot-notation" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.2" />
+  <component name="TwigDebugConfiguration">
+    <cachePath>$PROJECT_DIR$/var/cache/dev/twig</cachePath>
+  </component>
 </project>
