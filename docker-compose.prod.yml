@@ -6,7 +6,7 @@ services:
       nginx-proxy:
     environment:
       LETSENCRYPT_HOST: ${HOST}
-      HTTPS_METHOD=nohttp
+      HTTPS_METHOD: nohttp
 
   kibana:
     networks:
@@ -14,7 +14,7 @@ services:
       default:
     environment:
       LETSENCRYPT_HOST: kibana.${HOST}
-      HTTPS_METHOD=nohttp
+      HTTPS_METHOD: nohttp
 
   phpmyadmin:
     networks:
@@ -22,7 +22,7 @@ services:
       default:
     environment:
       LETSENCRYPT_HOST: pma.${HOST}
-      HTTPS_METHOD=nohttp
+      HTTPS_METHOD: nohttp
 
 networks:
   nginx-proxy:
