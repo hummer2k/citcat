@@ -4,16 +4,22 @@ services:
   web:
     networks:
       nginx-proxy:
+    environment:
+      LETSENCRYPT_HOST: ${HOST}
 
   kibana:
     networks:
       nginx-proxy:
       default:
+    environment:
+      LETSENCRYPT_HOST: kibana.${HOST}
 
   phpmyadmin:
     networks:
       nginx-proxy:
       default:
+    environment:
+      LETSENCRYPT_HOST: pma.${HOST}
 
 networks:
   nginx-proxy:
