@@ -9,10 +9,6 @@ namespace App\Api;
 use Abraham\TwitterOAuth\TwitterOAuth;
 use App\Repository\TweetRepository;
 use Symfony\Component\Console\Helper\ProgressBar;
-use Symfony\Component\Console\Output\Output;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\OutputStyle;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 class Twitter
 {
@@ -62,7 +58,7 @@ class Twitter
                     $parameters
                 )
             );
-            foreach ($result->id as $tweet) {
+            foreach ($result as $tweet) {
                 $tweets[] = $tweet;
             }
         }
@@ -96,5 +92,18 @@ class Twitter
             $maxId = end($tweets)->id;
             $this->fetchTweetsByUserId($userId, $progressBar, $count, $maxId);
         }
+    }
+
+    /**
+     * @param array $tweets
+     * @return array
+     */
+    public function idify(array $tweets): array
+    {
+        $tweetIds = [];
+        foreach ($tweets as $tweet) {
+            $tweetIds[] = $tweet->id;
+        }
+        return $tweetIds;
     }
 }
