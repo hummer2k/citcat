@@ -7,7 +7,6 @@
 namespace App\Indexer;
 
 use App\Entity\Tweet;
-use App\Repository\TweetRepository;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Events;

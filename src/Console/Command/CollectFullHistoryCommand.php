@@ -105,7 +105,7 @@ class CollectFullHistoryCommand extends Command
             $page = 1;
             do {
 
-                $cacheFile = __DIR__ . '/../../../var/dumps/' . md5(json_encode($mergedParams)) . '.json';
+                $cacheFile = __DIR__ . '/var/dumps/' . md5(json_encode($mergedParams)) . '.json';
                 $progressBar->setMessage(sprintf('Page: %d', $page));
 
                 if (!file_exists($cacheFile)) {
