@@ -1,8 +1,4 @@
-ARG BASE_IMAGE=chialab/php:7.2-fpm
-
-FROM ${BASE_IMAGE}
-
-MAINTAINER cornelius.adams@gmx.net
+FROM chialab/php:7.2-fpm
 
 # Install additional php extensions and tools
 RUN apt-get update && apt-get install --no-install-recommends -y gnupg2 libxslt-dev vim  iproute2 && rm -rf /var/lib/apt/lists/*
