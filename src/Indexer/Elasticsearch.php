@@ -36,25 +36,52 @@ class Elasticsearch
     private $client;
 
     /**
-     * @var string[]
-     */
-    private $ignoreFields = [
-        'display_text_range',
-        'quoted_status',
-        'extended_entities',
-        'retweeted_status.extended_entities',
-        'retweeted_status.entities.media',
-        'retweeted_status.entities.urls',
-        'retweeted_status.entities.user_mentions',
-        'retweeted_status.display_text_range',
-        'retweeted_status.quoted_status',
-        'place'
-    ];
-
-    /**
      * @var ObjectManager
      */
     private $objectManager;
+
+    private $indexFields = [
+        'created_at',
+        'entities.hashtags',
+        'entities.user_mentions',
+        'favorite_count',
+        'id_str',
+        'id',
+        'in_reply_to_screen_name',
+        'in_reply_to_status_id',
+        'in_reply_to_user_id',
+        'lang',
+        'place',
+        'full_text',
+
+        'user.id',
+        'user.created_at',
+        'user.screen_name',
+        'user.name',
+        'user.location',
+        'user.url',
+        'user.description',
+        'user.entities',
+        'user.favourites_count',
+        'user.followers_count',
+        'user.friends_count',
+        'user.listed_count',
+        'user.lang',
+        'user.location',
+        'user.name',
+        'user.statuses_count',
+        'user.url',
+        'user.verified',
+    ];
+
+    /**
+     * @var string[]
+     */
+    private $prefixes = [
+        '',
+        'quoted_status.',
+        'retweeted_status.'
+    ];
 
     public function __construct(TweetRepository $tweetRepository, Client $client, ObjectManager $objectManager)
     {
@@ -81,19 +108,24 @@ class Elasticsearch
     private function createDocument(Tweet $tweet): Document
     {
         $rawData = new Dot($tweet->getRawData());
-        $rawData['url'] = sprintf(
+
+        $indexData = new Dot();
+        $indexData['url'] = sprintf(
             'https://twitter.com/%s/status/%s',
             $rawData['user']['screen_name'],
             $rawData['id_str']
         );
 
-        foreach ($this->ignoreFields as $field) {
-            if (isset($rawData[$field])) {
-                unset($rawData[$field]);
+        foreach ($this->prefixes as $prefix) {
+            foreach ($this->indexFields as $indexField) {
+                $field = $prefix . $indexField;
+                if (isset($rawData[$field])) {
+                    $indexData[$field] = $rawData[$field];
+                }
             }
         }
 
-        return new Document($tweet->getId(), $rawData->all());
+        return new Document($tweet->getId(), $indexData->all());
     }
 
     /**
