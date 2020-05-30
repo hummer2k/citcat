@@ -7,6 +7,13 @@ services:
     environment:
       LETSENCRYPT_HOST: ${HOST}
       HTTPS_METHOD: nohttp
+    restart: always
+
+  php:
+    restart: always
+
+  db:
+    restart: always
 
   kibana:
     networks:
@@ -15,6 +22,10 @@ services:
     environment:
       LETSENCRYPT_HOST: kibana.${HOST}
       HTTPS_METHOD: nohttp
+    restart: always
+
+  elasticsearch:
+    restart: always
 
   phpmyadmin:
     networks:
@@ -23,6 +34,7 @@ services:
     environment:
       LETSENCRYPT_HOST: pma.${HOST}
       HTTPS_METHOD: nohttp
+    restart: always
 
 networks:
   nginx-proxy:

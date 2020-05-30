@@ -1,7 +1,6 @@
 #!/bin/bash
 cd "$(dirname "$0")"
 source .env
-docker-compose up -d
 
 now=$(date +"%Y-%m-%d_%H-%M-%S");
 mkdir -p var/backup
