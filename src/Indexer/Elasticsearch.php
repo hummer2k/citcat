@@ -9,6 +9,7 @@
 namespace App\Indexer;
 
 
+use Adbar\Dot;
 use App\Entity\Tweet;
 use App\Repository\TweetRepository;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -33,6 +34,22 @@ class Elasticsearch
      * @var Client
      */
     private $client;
+
+    /**
+     * @var string[]
+     */
+    private $ignoreFields = [
+        'display_text_range',
+        'quoted_status',
+        'extended_entities',
+        'retweeted_status.extended_entities',
+        'retweeted_status.entities.media',
+        'retweeted_status.entities.urls',
+        'retweeted_status.entities.user_mentions',
+        'retweeted_status.display_text_range',
+        'retweeted_status.quoted_status',
+        'place'
+    ];
 
     /**
      * @var ObjectManager
@@ -63,13 +80,20 @@ class Elasticsearch
      */
     private function createDocument(Tweet $tweet): Document
     {
-        $rawData = $tweet->getRawData();
+        $rawData = new Dot($tweet->getRawData());
         $rawData['url'] = sprintf(
             'https://twitter.com/%s/status/%s',
             $rawData['user']['screen_name'],
             $rawData['id_str']
         );
-        return new Document($tweet->getId(), $rawData);
+
+        foreach ($this->ignoreFields as $field) {
+            if (isset($rawData[$field])) {
+                unset($rawData[$field]);
+            }
+        }
+
+        return new Document($tweet->getId(), $rawData->all());
     }
 
     /**

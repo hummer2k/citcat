@@ -9,6 +9,7 @@
 namespace App\Console\Command;
 
 use Abraham\TwitterOAuth\TwitterOAuth;
+use App\Api\Twitter;
 use App\Helper\ConnectionKeepAlive;
 use App\Repository\TweetRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -42,6 +43,11 @@ class PublicStreamCommand extends Command
     private $entityManager;
 
     /**
+     * @var Twitter
+     */
+    private $twitter;
+
+    /**
      * PublicStreamCommand constructor.
      * @param PublicStream $publicStream
      * @param TwitterOAuth $twitterApi
@@ -52,6 +58,7 @@ class PublicStreamCommand extends Command
     public function __construct(
         PublicStream $publicStream,
         TwitterOAuth $twitterApi,
+        Twitter $twitter,
         TweetRepository $tweetRepository,
         EntityManagerInterface $entityManager,
         string $name = 'twitter:public-stream'
@@ -61,6 +68,7 @@ class PublicStreamCommand extends Command
         $this->twitterApi = $twitterApi;
         $this->tweetRepository = $tweetRepository;
         $this->entityManager = $entityManager;
+        $this->twitter = $twitter;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -82,13 +90,14 @@ class PublicStreamCommand extends Command
             $this->publicStream->whenTweets(
                 $twitterUseIds,
                 function ($tweet) use ($output, $twitterUseIds) {
-                    if (!isset($tweet['user'], $tweet['full_text'])) {
+                    var_dump($tweet);
+                    if (!isset($tweet['user'])) {
                         $output->writeln('<comment>' . sprintf('%s is not a tweet', $tweet['id_str']) . '</comment>');
                         return;
                     }
                     if (in_array($tweet['user']['id'], $twitterUseIds)) {
                         $output->writeln(print_r($tweet, true));
-                        $this->tweetRepository->saveBulk([$tweet]);
+                        $this->twitter->fetchTweetsByIds([$tweet['id']]);
                         $output->writeln(sprintf('<info>Fetched tweet: %s</info>', $tweet['id_str']));
                     }
                 }

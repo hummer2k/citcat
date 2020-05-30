@@ -10,6 +10,7 @@ use Abraham\TwitterOAuth\TwitterOAuth;
 use App\Api\Twitter;
 use App\Helper\CollectHelper;
 use App\Repository\TweetRepository;
+use Elastica\Exception\RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
@@ -74,13 +75,25 @@ class CollectFullHistoryCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $friends = $this->twitter->getFriends();
-        $queries = $this->collectHelper->generateFromQueries($friends->users, 256);
+        $typeConfig = [
+            '30day' => [
+                'queryLimit' => 256,
+                'maxResults' => 100
+            ],
+            'fullarchive' => [
+                'queryLimit' => 128,
+                'maxResults' => 100
+            ]
+        ];
 
         $type = $input->getOption('type');
+        $config = $typeConfig[$type];
+
+        $friends = $this->twitter->getFriends();
+        $queries = $this->collectHelper->generateFromQueries($friends->users, $config['queryLimit']);
 
         $params = [
-            'maxResults' => 100
+            'maxResults' => $config['maxResults']
         ];
 
         if ($fromDate = $input->getOption('from-date')) {
@@ -104,8 +117,10 @@ class CollectFullHistoryCommand extends Command
 
             $page = 1;
             do {
-
-                $cacheFile = __DIR__ . '/var/dumps/' . md5(json_encode($mergedParams)) . '.json';
+                $cacheFile = 'var/dumps/' . $type . '/' . md5(json_encode($mergedParams)) . '.json';
+                if (!is_dir(dirname($cacheFile))) {
+                    mkdir(dirname($cacheFile), 0775, true);
+                }
                 $progressBar->setMessage(sprintf('Page: %d', $page));
 
                 if (!file_exists($cacheFile)) {
@@ -118,9 +133,8 @@ class CollectFullHistoryCommand extends Command
                     $response = json_decode(file_get_contents($cacheFile));
                 }
 
-                if (isset($response->errors)) {
-                    $this->collectHelper->outputErrors($response->errors, $output);
-                    $this->collectHelper->wait(300, $output);
+                if (isset($response->error)) {
+                    throw new RuntimeException($response->error);
                 }
 
                 $tweetIds = $this->twitter->idify($response->results);
@@ -140,5 +154,6 @@ class CollectFullHistoryCommand extends Command
         }
 
         $progressBar->finish();
+        $output->writeln('');
     }
 }
