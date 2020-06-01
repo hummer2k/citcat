@@ -77,7 +77,8 @@ class Twitter
         $params = [
             'user_id' => $userId,
             'count' => $count,
-            'tweet_mode' => 'extended'
+            'tweet_mode' => 'extended',
+            'include_rts' => true
         ];
         if ($maxId) {
             $params['max_id'] = $maxId;
@@ -88,8 +89,8 @@ class Twitter
 
         $progressBar->advance(count($tweets));
 
-        if (count($tweets) === $count) {
-            $maxId = end($tweets)->id;
+        if (count($tweets) > 0) {
+            $maxId = end($tweets)->id - 1;
             $this->fetchTweetsByUserId($userId, $progressBar, $count, $maxId);
         }
     }
