@@ -286,7 +286,7 @@ class Tweet implements ArraySerializableInterface
     }
 
     /**
-     * @return Category[]
+     * @return Category[]|ArrayCollection
      */
     public function getCategories(): iterable
     {

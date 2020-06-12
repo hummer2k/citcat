@@ -18,13 +18,27 @@
 
 {% block content %}
 <h1 class="display-4 border-bottom mb-4">{{ currentCategory.name }}</h1>
-<table class="table table-condensed table-hover">
+
+<form class="form-inline action" data-action="add" action="{{ url('tweet_manage_add_to_category', [], true) }}" method="post">
+    <input type="hidden" name="category_id" value="{{ currentCategory.id }}" />
+    <div class="input-group mb-3">
+        <input type="text" name="tweet_id" id="tweet_id" placeholder="Tweet-ID" class="form-control">
+        <div class="input-group-append">
+            <button class="btn btn-outline-primary" type="submit"><i class="fa fa-plus"></i></button>
+        </div>
+    </div>
+</form>
+
+<table class="table table-condensed table-hover" id="table_{{ currentCategory.name }}">
     <thead>
         <tr>
+            <th>Aktion</th>
             <th>ID</th>
             <th>Username</th>
             <th>Retweet</th>
             <th>Text</th>
+            <th>Retweet Text</th>
+            <th>Quoted Text</th>
             <th>Datum</th>
             <th>Link</th>
             <th>Likes</th>
@@ -35,10 +49,49 @@
     <tbody>
         {% for tweet in tweets %}
         <tr>
+            <td>
+                <div class="btn-group">
+                    <div class="btn-group btn-group-sm">
+                        <a class="btn btn-outline-dark action"
+                           data-confirm="Löschen?"
+                           data-action="delete"
+                           title="Löschen"
+                           href="{{ url('tweet_manage_delete_from_category', {categoryId: currentCategory.id, tweetId: tweet.id }, true) }}">
+                            <i class="fa fa-trash"></i>
+                        </a>
+                    </div>
+                    <div class="btn-group btn-group-sm">
+                        <button class="btn btn-outline-secondary dropdown-toggle" title="Kopieren" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-copy"></i>
+                        </button>
+                        <div class="dropdown-menu">
+                            {% for category in categories %}
+                                {% if category.id != currentCategory.id %}
+                                    <a class="dropdown-item action" data-action="copy" href="{{ url('tweet_manage_add_to_category', {tweet_id: tweet.id, category_id: category.id}, true) }}">{{ category.name }}</a>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="btn-group btn-group-sm">
+                        <button class="btn btn-outline-secondary dropdown-toggle" title="Verschieben" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-share-square"></i>
+                        </button>
+                        <div class="dropdown-menu">
+                            {% for category in categories %}
+                                {% if category.id != currentCategory.id %}
+                                    <a class="dropdown-item action" data-action="move" href="{{ url('tweet_manage_move_to_category', {tweet_id: tweet.id, from_id: currentCategory.id, to_id: category.id}, true) }}">{{ category.name }}</a>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </td>
             <td>{{ tweet.id }}</td>
             <td>{{ tweet.screenName }}</td>
             <td>{{ tweet.isRetweet ? 'ja' : 'nein' }}</td>
-            <td>{{ tweet.isRetweet ? tweet.rawData.retweeted_status.full_text : tweet.rawData.full_text }}</td>
+            <td>{{ tweet.rawData.full_text }}</td>
+            <td>{{ tweet.rawData.retweeted_status.full_text ?? '' }}</td>
+            <td>{{ tweet.rawData.quoted_status.full_text ?? '' }}</td>
             <td data-sort="{{ tweet.createdAt|date('Y-m-d H:i:s') }}">{{ tweet.createdAt|date('d.m.Y H:i:s', 'Europe/Berlin') }}</td>
             <td><a href="{{ tweet.url }}" target="_blank">{{ tweet.url }}</a></td>
             <td>{{ tweet.isRetweet ? tweet.rawData.retweeted_status.favorite_count : tweet.rawData.favorite_count }}</td>
@@ -59,11 +112,66 @@
                     [25, 50, 100, -1],
                     [25, 50, 100, 'All'],
                 ],
+                stateSave: true,
                 buttons: [
                      'csv', 'excel', 'print', 'colvis'
                 ]
             });
-            table.buttons().container().appendTo('#DataTables_Table_0_length');
+            table.buttons().container().appendTo('.dataTables_length');
+
+            $('[title]').tooltip();
+
+            var handleResponse = function (response, elem) {
+                if (response.error) {
+                    alert(response.error);
+                    return;
+                }
+
+                let action = elem.data('action');
+                switch (action) {
+                    case 'add':
+                        window.location.reload();
+                        break;
+                    case 'copy':
+                        alert(response.message);
+                        break;
+                    case 'move':
+                    case 'delete':
+                        table.row(elem.parents('tr'))
+                            .remove()
+                            .draw();
+                        break;
+                }
+            };
+
+            var sendRequest = function (url, data, elem) {
+                $.ajax({
+                    url: url,
+                    data: data,
+                    success: function (response) {
+                        handleResponse(response, elem);
+                    }
+                });
+            }
+
+            $(document).on('click', 'a.action', function (e) {
+                e.preventDefault();
+                var elem = $(this);
+                if (elem.data('confirm') && !confirm(elem.data('confirm'))) {
+                    return false;
+                }
+                sendRequest(elem.attr('href'), {}, elem);
+            });
+
+            $(document).on('submit', 'form.action', function (e) {
+                e.preventDefault();
+                var elem = $(this);
+                if (elem.data('confirm') && !confirm(elem.data('confirm'))) {
+                    return false;
+                }
+                sendRequest(elem.attr('action'), elem.serialize(), elem);
+            });
+
         })(jQuery);
     </script>
 {% endblock %}
