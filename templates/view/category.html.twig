@@ -32,7 +32,7 @@
 <table class="table table-condensed table-hover" id="table_{{ currentCategory.name }}">
     <thead>
         <tr>
-            <th>Aktion</th>
+            <th data-sortable="false" data-searchable="false">Aktion</th>
             <th>ID</th>
             <th>Username</th>
             <th>Retweet</th>
@@ -114,7 +114,26 @@
                 ],
                 stateSave: true,
                 buttons: [
-                     'csv', 'excel', 'print', 'colvis'
+                    {
+                        extend: 'csvHtml5',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+                    'print',
+                    'colvis'
                 ]
             });
             table.buttons().container().appendTo('.dataTables_length');

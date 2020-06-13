@@ -11,6 +11,7 @@ use App\Entity\Tweet;
 use App\Kernel;
 use App\Repository\CategoryRepository;
 use App\Repository\TweetRepository;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -58,39 +59,54 @@ class ImportDatasetCommand extends Command
     protected function configure()
     {
         parent::configure();
+        $this->addOption('from-users', null, InputOption::VALUE_OPTIONAL, 'comma separated list of user names');
         $this->addOption('dataset', null, InputOption::VALUE_REQUIRED, 'Path to dataset');
-        $this->addOption('category-id', null, InputOption::VALUE_REQUIRED, 'Category Id');
+        $this->addOption('category', null, InputOption::VALUE_REQUIRED, 'Category');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $categoryId = $input->getOption('category-id');
-        if (!$categoryId) {
-            $output->writeln('Please specify the category-id');
-            return 1;
-        }
-        $dataset = $input->getOption('dataset');
-        $file = $this->kernel->getProjectDir() . '/data/' . $dataset;
-        if (!is_file($file) || !is_readable($file)) {
-            $output->writeln('<error>' . $file . ' is not readable.</error>');
-            return 1;
-        }
-        $tweetIds = array_unique(array_map('trim', file($file)));
-
+        $categoryId = $input->getOption('category');
         /** @var Category $category */
         $category = $this->categoryRepository->find($categoryId);
-
-        foreach ($tweetIds as $tweetId) {
-            $tweetId = trim($tweetId);
-            if (!$tweetId) continue;
-            /** @var Tweet $tweet */
-            $tweet = $this->tweetRepository->find($tweetId);
-            if (!$tweet) {
-                $output->writeln('<comment>' . $tweetId . ' not found in database.</comment>');
-                continue;
-            }
-            $tweet->addCategory($category);
+        if (!$category && !is_numeric($categoryId)) {
+            $category = new Category();
+            $category->setName($categoryId);
+            $this->objectManager->persist($category);
+        } elseif (!$category) {
+            $output->writeln(sprintf('<error>Category "%s" not found.</error>', $categoryId));
+            return 1;
         }
+
+        if ($dataset = $input->getOption('dataset')) {
+            $file = $this->kernel->getProjectDir() . '/data/' . $dataset;
+            if (!is_file($file) || !is_readable($file)) {
+                $output->writeln('<error>' . $file . ' is not readable.</error>');
+                return 1;
+            }
+            $tweetIds = array_unique(array_map('trim', file($file)));
+            foreach ($tweetIds as $tweetId) {
+                $tweetId = trim($tweetId);
+                if (!$tweetId) continue;
+                /** @var Tweet $tweet */
+                $tweet = $this->tweetRepository->find($tweetId);
+                if (!$tweet) {
+                    $output->writeln('<comment>' . $tweetId . ' not found in database.</comment>');
+                    continue;
+                }
+                $tweet->addCategory($category);
+            }
+        } elseif ($users = $input->getOption('from-users')) {
+            $users = array_unique(array_map('trim', explode(',', $users)));
+            $criteria = Criteria::create();
+            $criteria->where($criteria::expr()->in('screenName', $users));
+            /** @var Tweet[] $tweets */
+            $tweets = $this->tweetRepository->matching($criteria);
+            foreach ($tweets as $tweet) {
+                $tweet->addCategory($category);
+            }
+        }
+
         $this->objectManager->flush();
     }
 }
