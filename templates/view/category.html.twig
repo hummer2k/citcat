@@ -11,6 +11,9 @@
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
             {% for category in categories %}
             <a class="dropdown-item{{ currentCategory.id == category.id ? ' active' : '' }}" href="/?category_id={{ category.id }}">{{ category.name }}</a>
+                {% for childCategory in category.getChildren() %}
+                    <a class="dropdown-item{{ currentCategory.id == childCategory.id ? ' active' : '' }}" href="/?category_id={{ childCategory.id }}">&nbsp;&nbsp; {{ childCategory.name }}</a>
+                {% endfor %}
             {% endfor %}
         </div>
     </li>
@@ -69,6 +72,11 @@
                                 {% if category.id != currentCategory.id %}
                                     <a class="dropdown-item action" data-action="copy" href="{{ url('tweet_manage_add_to_category', {tweet_id: tweet.id, category_id: category.id}, true) }}">{{ category.name }}</a>
                                 {% endif %}
+                                {% for childCategory in category.getChildren %}
+                                    {% if childCategory.id != currentCategory.id %}
+                                        <a class="dropdown-item action" data-action="copy" href="{{ url('tweet_manage_add_to_category', {tweet_id: tweet.id, category_id: childCategory.id}, true) }}">&nbsp;&nbsp;{{ childCategory.name }}</a>
+                                    {% endif %}
+                                {% endfor %}
                             {% endfor %}
                         </div>
                     </div>
@@ -81,6 +89,11 @@
                                 {% if category.id != currentCategory.id %}
                                     <a class="dropdown-item action" data-action="move" href="{{ url('tweet_manage_move_to_category', {tweet_id: tweet.id, from_id: currentCategory.id, to_id: category.id}, true) }}">{{ category.name }}</a>
                                 {% endif %}
+                                {% for childCategory in category.getChildren %}
+                                    {% if childCategory.id != currentCategory.id %}
+                                        <a class="dropdown-item action" data-action="move" href="{{ url('tweet_manage_move_to_category', {tweet_id: tweet.id, from_id: currentCategory.id, to_id: childCategory.id}, true) }}">&nbsp;&nbsp;{{ childCategory.name }}</a>
+                                    {% endif %}
+                                {% endfor %}
                             {% endfor %}
                         </div>
                     </div>

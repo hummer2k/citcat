@@ -3,7 +3,9 @@
 {% block content %}
     <div class="jumbotron">
         {% for category in categories %}
-            <h3>{{category.name}}</h3>
+            <h3>
+                <a href="/?category_id={{ category.id }}">{{ category.name }}</a>
+            </h3>
             <ul>
                 {% for childCategory in category.getChildren() %}
                     <li>
