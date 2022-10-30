@@ -46,7 +46,13 @@ class Category extends AbstractController
 
         /** @var \App\Entity\Category $category */
         $category   = $this->categoryRepository->find($categoryId);
-        $tweets     = $this->tweetRepository->findByCategory($category);
+
+        if (!$category) {
+            $this->addFlash('danger', 'Datensatz nicht gefunden.');
+            return $this->redirectToRoute('app_view_category_execute');
+        }
+
+        $tweets = $this->tweetRepository->findByCategory($category);
 
         return $this->render('view/category.html.twig', [
             'categories' => $categories,
