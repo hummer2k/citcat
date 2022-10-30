@@ -1,0 +1,24 @@
+{
+    "index.priority": "1",
+    "index.refresh_interval": "1s",
+    "index.write.wait_for_active_shards": "1",
+    "index.mapping.total_fields.limit": "2000",
+    "index.blocks.read_only_allow_delete": "false",
+    "index.query.default_field": [
+        "full_text",
+        "retweeted_status.full_text",
+        "quoted_status.full_text"
+    ],
+    "index.analysis.filter.german_stemmer.type": "stemmer",
+    "index.analysis.filter.german_stemmer.language": "light_german",
+    "index.analysis.filter.german_stop.type": "stop",
+    "index.analysis.filter.german_stop.stopwords": "_german_",
+    "index.analysis.analyzer.rebuilt_german.filter": [
+        "lowercase",
+        "german_stop",
+        "german_normalization",
+        "german_stemmer"
+    ],
+    "index.analysis.analyzer.rebuilt_german.tokenizer": "standard",
+    "index.number_of_replicas": "0"
+}

@@ -2,11 +2,15 @@
 
 {% block content %}
     <div class="jumbotron">
-        <h1>Datensätze</h1>
-        <ul>
-            {% for category in categories %}
-                <li><a href="/?category_id={{ category.id }}">{{ category.name }}</a></li>
-            {% endfor %}
-        </ul>
+        {% for category in categories %}
+            <h3>{{category.name}}</h3>
+            <ul>
+                {% for childCategory in category.getChildren() %}
+                    <li>
+                        <a href="/?category_id={{ childCategory.id }}">{{ childCategory.name }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endfor %}
     </div>
 {% endblock %}

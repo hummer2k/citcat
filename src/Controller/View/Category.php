@@ -38,7 +38,7 @@ class Category extends AbstractController
     public function execute(Request $request)
     {
         $categoryId = $request->get('category_id');
-        $categories = $this->categoryRepository->findAll();
+        $categories = $this->categoryRepository->findBy(['parent' => null], ['name' => 'ASC']);
 
         if (!$categoryId) {
             return $this->render('view/categories.html.twig', ['categories' => $categories]);

@@ -1,6 +1,13 @@
 {
     "number_of_replicas": "0",
     "mapping.total_fields.limit": "2000",
+    "query": {
+        "default_field": [
+            "full_text",
+            "retweeted_status.full_text",
+            "quoted_status.full_text"
+        ]
+    },
     "analysis": {
         "filter": {
             "german_stop": {

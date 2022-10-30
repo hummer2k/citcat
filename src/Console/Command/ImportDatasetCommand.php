@@ -18,6 +18,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 class ImportDatasetCommand extends Command
@@ -62,6 +63,7 @@ class ImportDatasetCommand extends Command
         $this->addOption('from-users', null, InputOption::VALUE_OPTIONAL, 'comma separated list of user names');
         $this->addOption('dataset', null, InputOption::VALUE_REQUIRED, 'Path to dataset');
         $this->addOption('category', null, InputOption::VALUE_REQUIRED, 'Category');
+        $this->addOption('copy-from-users', null, InputOption::VALUE_OPTIONAL);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -104,6 +106,33 @@ class ImportDatasetCommand extends Command
             $tweets = $this->tweetRepository->matching($criteria);
             foreach ($tweets as $tweet) {
                 $tweet->addCategory($category);
+            }
+        } elseif ($input->getOption('copy-from-users')) {
+
+            throw new \RuntimeException('not implemented.');
+
+            $criteria = Criteria::create();
+            $criteria->where($criteria::expr()->startsWith('name', '@'));
+            $sourceCategories = $this->categoryRepository->matching($criteria);
+            $batchSize = 200;
+
+            $io = new SymfonyStyle($input, $output);
+            foreach ($sourceCategories as $sourceCategory) {
+                /** @var Tweet[] $tweets */
+                $tweets = $this->tweetRepository->findByCategory($sourceCategory);
+                $counter = 0;
+                $io->progressStart(count($tweets));
+                foreach ($tweets as $tweet) {
+                    $tweet->addCategory($category);
+                    if ($counter++ % $batchSize === 0) {
+                        $this->objectManager->flush();
+                        $this->objectManager->clear();
+                        $io->progressAdvance($batchSize);
+                    }
+                }
+                $this->objectManager->flush();
+                $this->objectManager->clear();
+                $io->progressFinish();
             }
         }
 
