@@ -1,10 +1,12 @@
-# Requirements
+# CITCAT: Content Indexing Tool for Collecting and Archiving Tweets
+
+## Requirements
 
 - Linux or Mac (Tested with ubuntu 22.04 LTS)
 - Docker (Tested with 23.0.1)
 - Docker-Compose (Tested with 1.29.2)
 
-# Installation
+## Installation
 
 1. Copy `.env.dist` to `.env` and add your Twitter API credentials.
     ```
@@ -23,23 +25,24 @@
 
 To stop the project run: `$ docker-compose down`
 
-# Services
+## Services
 
 - Web-Interface: http://localhost:8005
 - Kibana: http://localhost:5601
 - phpMyAdmin: http://localhost:8040
 
-# Collect Tweets
+## Collect Tweets
 
-## Collect from timeline
+### Collect from timeline
 
 `$ docker-compose exec php bin/console twitter:collect:timeline`
 
-## Collect with search api
+### Collect with search api
 
 `$ docker-compose exec php bin/console twitter:collect:search`
 
-# Import followers/friends
+## Import followers/friends
 
 `$ docker-compose exec php bin/console twitter:collect:friends`
+
 
