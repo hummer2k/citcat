@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+chmod 0777 ./var/vol/elasticsearch/
 ln -sf docker-compose.dev.yml docker-compose.override.yml
 docker-compose up -d
 docker-compose exec php bin/composer install
