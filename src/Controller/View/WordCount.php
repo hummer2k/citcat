@@ -1,13 +1,6 @@
 <?php
-/**
- * WordCount
- *
- * @package
- * @author    Cornelius Adams (conlabz GmbH) <ca@conlabz.de>
- */
 
 namespace App\Controller\View;
-
 
 use App\Entity\Tweet;
 use App\Repository\TweetRepository;

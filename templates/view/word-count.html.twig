@@ -2,7 +2,7 @@
 
 {% block stylesheets %}
 {{ parent() }}
-<link rel="stylesheet" href="/css/wordcloud.css" />
+<link rel="stylesheet" href="{{ asset('css/wordcloud.css') }}" />
 {% endblock %}
 
 {% block content %}
@@ -18,7 +18,7 @@
 {% block javascripts %}
 
     {{  parent() }}
-    <script src="/js/jQWCloudv3.1.js"></script>
+    <script src="{{ asset('js/jQWCloudv3.1.js') }}"></script>
     <script>
         jQuery(function($) {
            $('#wordCloud').jQWCloud({

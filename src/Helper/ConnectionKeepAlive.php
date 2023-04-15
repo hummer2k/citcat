@@ -1,9 +1,10 @@
 <?php
+
 namespace App\Helper;
 
 use Doctrine\DBAL\Connection;
 
-declare(ticks = 3000000);
+declare(ticks=3000000);
 
 class ConnectionKeepAlive
 {
@@ -45,8 +46,9 @@ class ConnectionKeepAlive
         foreach ($this->connections as $conn) {
             try {
                 $conn->executeQuery('SELECT 1')->closeCursor();
-            } catch(\Exception $e) {
-                if ($conn === null || stripos($e->getMessage(), 'SQLSTATE[HY000]: General error: 2006 MySQL server has gone away') === false) {
+            } catch (\Exception $e) {
+                if ($conn === null || stripos($e->getMessage(),
+                        'SQLSTATE[HY000]: General error: 2006 MySQL server has gone away') === false) {
                     throw $e;
                 }
                 $conn->close();

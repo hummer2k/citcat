@@ -1,10 +1,4 @@
 <?php
-/**
- * CollectHelper
- *
- * @package
- * @author    Cornelius Adams (conlabz GmbH) <ca@conlabz.de>
- */
 
 namespace App\Helper;
 

@@ -1,10 +1,4 @@
 <?php
-/**
- * TimeLineCollector
- *
- * @package
- * @author    Cornelius Adams (conlabz GmbH) <ca@conlabz.de>
- */
 
 namespace App\Collector;
 
@@ -28,11 +22,6 @@ class TimelineCollector implements CollectorInterface
     private $twitterOAuth;
 
     /**
-     * @var TweetRepository
-     */
-    private $tweetRepository;
-
-    /**
      * @var TimelineResponseHandler
      */
     private $timelineResponseHandler;
@@ -43,30 +32,18 @@ class TimelineCollector implements CollectorInterface
     private $entityManager;
 
     /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * TimeLineCollector constructor.
      * @param TwitterOAuth $twitterOAuth
-     * @param TweetRepository $tweetRepository
      * @param TimelineResponseHandler $timelineResponseHandler
      * @param EntityManagerInterface $entityManager
-     * @param LoggerInterface $logger
      */
     public function __construct(
         TwitterOAuth $twitterOAuth,
-        TweetRepository $tweetRepository,
         TimelineResponseHandler $timelineResponseHandler,
-        EntityManagerInterface $entityManager,
-        LoggerInterface $logger
+        EntityManagerInterface $entityManager
     ) {
         $this->twitterOAuth = $twitterOAuth;
-        $this->tweetRepository = $tweetRepository;
         $this->timelineResponseHandler = $timelineResponseHandler;
         $this->entityManager = $entityManager;
-        $this->logger = $logger;
     }
 
     /**
@@ -75,7 +52,7 @@ class TimelineCollector implements CollectorInterface
      */
     private function mergeParams(array $params = []): array
     {
-        $defaultParams =  [
+        $defaultParams = [
             'count' => 200,
             'tweet_mode' => 'extended',
             'memory_limit' => 2 * 1024 * 1024 * 1024

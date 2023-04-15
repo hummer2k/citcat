@@ -1,8 +1,4 @@
 <?php
-/**
- * @package
- * @author Cornelius Adams (conlabz GmbH) <cornelius.adams@conlabz.de>
- */
 
 namespace App\Console\Command;
 
@@ -11,8 +7,6 @@ use App\Entity\Category;
 use App\Entity\Tweet;
 use App\Repository\CategoryRepository;
 use App\Repository\TweetRepository;
-use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
@@ -36,23 +30,16 @@ class UpdateTweetsCommand extends Command
      */
     private $twitterOAuth;
 
-    /**
-     * @var ObjectManager
-     */
-    private $objectManager;
-
     public function __construct(
         TweetRepository $tweetRepository,
         CategoryRepository $categoryRepository,
         TwitterOAuth $twitterOAuth,
-        ObjectManager $objectManager,
         string $name = 'twitter:tweets:update'
     ) {
         parent::__construct($name);
         $this->tweetRepository = $tweetRepository;
         $this->categoryRepository = $categoryRepository;
         $this->twitterOAuth = $twitterOAuth;
-        $this->objectManager = $objectManager;
     }
 
     protected function configure()
@@ -64,7 +51,6 @@ class UpdateTweetsCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $category = null;
         if ($categoryId = $input->getOption('category-id')) {
             /** @var Category $category */
             $category = $this->categoryRepository->find($categoryId);
@@ -97,10 +83,7 @@ class UpdateTweetsCommand extends Command
         $output->writeln('');
     }
 
-    /**
-     * @param array $tweets |Tweet[]
-     */
-    private function processBatch(array $tweets)
+    private function processBatch(array $tweets): void
     {
         $result = $this->twitterOAuth->get('statuses/lookup', [
             'id' => implode(',', array_keys($tweets)),

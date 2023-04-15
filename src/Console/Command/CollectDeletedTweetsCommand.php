@@ -1,10 +1,4 @@
 <?php
-/**
- * CollectDeletedTweetsCommand
- *
- * @package
- * @author    Cornelius Adams (conlabz GmbH) <ca@conlabz.de>
- */
 
 namespace App\Console\Command;
 

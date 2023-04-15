@@ -57,7 +57,6 @@ class SearchCollector implements CollectorInterface
 
         $oldTweetCount = $this->tweetRepository->count([]);
         $output->writeln(sprintf('Start collecting tweets of %d followers', count($friends->users)));
-        $current = 1;
 
         $progressBar = new ProgressBar($output, count($queries));
         $progressBar->display();
@@ -94,7 +93,6 @@ class SearchCollector implements CollectorInterface
                 }
 
             } while (isset($response->search_metadata->next_results));
-            $current++;
 
             $progressBar->advance();
         }

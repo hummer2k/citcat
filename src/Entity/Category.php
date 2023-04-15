@@ -1,8 +1,4 @@
 <?php
-/**
- * @package
- * @author Cornelius Adams (conlabz GmbH) <cornelius.adams@conlabz.de>
- */
 
 namespace App\Entity;
 
@@ -10,7 +6,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\PersistentCollection;
 
 /**
  * Class Category

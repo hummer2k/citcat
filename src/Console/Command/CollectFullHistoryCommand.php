@@ -1,8 +1,4 @@
 <?php
-/**
- * @package
- * @author Cornelius Adams (conlabz GmbH) <cornelius.adams@conlabz.de>
- */
 
 namespace App\Console\Command;
 
@@ -35,30 +31,22 @@ class CollectFullHistoryCommand extends Command
     private $collectHelper;
 
     /**
-     * @var TweetRepository
-     */
-    private $tweetRepository;
-
-    /**
      * CollectFullHistoryCommand constructor.
      * @param Twitter $twitter
      * @param TwitterOAuth $twitterOAuth
      * @param CollectHelper $collectHelper
-     * @param TweetRepository $tweetRepository
      * @param string $name
      */
     public function __construct(
         Twitter $twitter,
         TwitterOAuth $twitterOAuth,
         CollectHelper $collectHelper,
-        TweetRepository $tweetRepository,
         string $name = 'twitter:collect:full-history'
     ) {
         parent::__construct($name);
         $this->twitter = $twitter;
         $this->twitterOAuth = $twitterOAuth;
         $this->collectHelper = $collectHelper;
-        $this->tweetRepository = $tweetRepository;
     }
 
     protected function configure()
@@ -71,7 +59,8 @@ class CollectFullHistoryCommand extends Command
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @return int|void|null
+     * @return void
+     * @throws \Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -105,7 +94,6 @@ class CollectFullHistoryCommand extends Command
 
         $progressBar = new ProgressBar($output, count($queries));
         $progressBar->display();
-        $current = 1;
 
         foreach ($queries as $query) {
             $mergedParams = array_merge(
@@ -148,7 +136,6 @@ class CollectFullHistoryCommand extends Command
                     $page++;
                 }
             } while (isset($response->next));
-            $current++;
 
             $progressBar->advance();
         }

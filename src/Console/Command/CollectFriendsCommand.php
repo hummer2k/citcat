@@ -1,13 +1,6 @@
 <?php
-/**
- * CollectFriendsCommand
- *
- * @package
- * @author    Cornelius Adams (conlabz GmbH) <ca@conlabz.de>
- */
 
 namespace App\Console\Command;
-
 
 use App\Collector\FriendsCollector;
 use Symfony\Component\Console\Command\Command;

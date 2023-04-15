@@ -1,8 +1,4 @@
 <?php
-/**
- * @package
- * @author Cornelius Adams (conlabz GmbH) <cornelius.adams@conlabz.de>
- */
 
 namespace App\Controller\View;
 
@@ -10,6 +6,7 @@ use App\Repository\CategoryRepository;
 use App\Repository\TweetRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class Category extends AbstractController
@@ -33,7 +30,7 @@ class Category extends AbstractController
     /**
      * @Route(path="/")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function execute(Request $request)
     {

@@ -1,13 +1,6 @@
 <?php
-/**
- * DeletedTweetsCollector
- *
- * @package
- * @author    Cornelius Adams (conlabz GmbH) <ca@conlabz.de>
- */
 
 namespace App\Collector;
-
 
 use Abraham\TwitterOAuth\TwitterOAuth;
 use App\Entity\Tweet;

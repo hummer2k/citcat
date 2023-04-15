@@ -2,7 +2,6 @@
 
 namespace App\Controller\View;
 
-
 use App\Repository\FriendRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;

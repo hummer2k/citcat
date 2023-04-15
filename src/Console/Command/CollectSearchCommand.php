@@ -1,13 +1,6 @@
 <?php
-/**
- * LastMonthCollectorCommand
- *
- * @package
- * @author    Cornelius Adams (conlabz GmbH) <ca@conlabz.de>
- */
 
 namespace App\Console\Command;
-
 
 use App\Collector\SearchCollector;
 use Doctrine\ORM\OptimisticLockException;
@@ -16,7 +9,6 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 class CollectSearchCommand extends Command
 {

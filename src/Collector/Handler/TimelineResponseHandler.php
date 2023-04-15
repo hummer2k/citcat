@@ -1,17 +1,9 @@
 <?php
-/**
- * SearchResponseHandler
- *
- * @package
- * @author    Cornelius Adams (conlabz GmbH) <ca@conlabz.de>
- */
 
 namespace App\Collector\Handler;
 
 use App\Helper\CollectHelper;
 use App\Repository\TweetRepository;
-use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use stdClass;

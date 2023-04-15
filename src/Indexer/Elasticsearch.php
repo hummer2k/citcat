@@ -1,19 +1,11 @@
 <?php
-/**
- * Elasticsearch
- *
- * @package
- * @author    Cornelius Adams (conlabz GmbH) <ca@conlabz.de>
- */
 
 namespace App\Indexer;
-
 
 use Adbar\Dot;
 use App\Entity\Tweet;
 use App\Repository\TweetRepository;
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\ORM\QueryBuilder;
 use Elastica\Client;
 use Elastica\Document;
 use Elastica\Index\Settings;
@@ -134,7 +126,7 @@ class Elasticsearch
      */
     public function reindex(OutputInterface $output, $tweets = null)
     {
-        $count  = $tweets ? count($tweets) : $this->tweetRepository->count([]);
+        $count = $tweets ? count($tweets) : $this->tweetRepository->count([]);
         $tweets = $tweets ?: $this->tweetRepository->getTweetIterator();
 
         $bulkSize = 500;

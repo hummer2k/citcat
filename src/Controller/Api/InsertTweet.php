@@ -7,7 +7,6 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Zend\Hydrator\HydratorInterface;
 
@@ -44,7 +43,6 @@ class InsertTweet extends AbstractController
     public function execute(Request $request)
     {
         try {
-
             $data = $request->request->all();
             $data['time'] = (new \DateTime())->setTimestamp($data['time']);
 

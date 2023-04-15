@@ -8,10 +8,6 @@ RUN docker-php-ext-install xsl
 RUN curl -L https://github.com/mailhog/mhsendmail/releases/download/v0.2.0/mhsendmail_linux_amd64 --output /usr/local/bin/mhsendmail \
     && chmod +x /usr/local/bin/mhsendmail
 
-# Install PHP tools
-RUN curl -L https://files.magerun.net/n98-magerun2.phar -o /usr/local/bin/n98-magerun2.phar \
-    && chmod +x /usr/local/bin/n98-magerun2.phar
-
 # User creation
 RUN useradd -U -m -r -o -u 1003 phpdev
 

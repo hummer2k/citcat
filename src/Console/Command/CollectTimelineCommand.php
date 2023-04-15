@@ -1,13 +1,6 @@
 <?php
-/**
- * CollectTimeLineHistoryCommand
- *
- * @package
- * @author    Cornelius Adams (conlabz GmbH) <ca@conlabz.de>
- */
 
 namespace App\Console\Command;
-
 
 use Abraham\TwitterOAuth\TwitterOAuth;
 use App\Collector\TimelineCollector;

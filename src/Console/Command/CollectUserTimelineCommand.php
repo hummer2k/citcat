@@ -1,12 +1,7 @@
 <?php
-/**
- * @package
- * @author Cornelius Adams (conlabz GmbH) <cornelius.adams@conlabz.de>
- */
 
 namespace App\Console\Command;
 
-use Abraham\TwitterOAuth\TwitterOAuth;
 use App\Api\Twitter;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -14,7 +9,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 class CollectUserTimelineCommand extends Command
 {
@@ -54,7 +48,7 @@ class CollectUserTimelineCommand extends Command
             $this->twitter->fetchTweetsByUserId($userId, new ProgressBar($output));
         } else {
             $startFrom = (int) $input->getOption('start-from');
-            $friends   = $this->twitter->getFriends();
+            $friends = $this->twitter->getFriends();
 
             $section1 = $output->section();
             $section2 = $output->section();

@@ -1,0 +1,5 @@
+/backup*
+/cache/
+/log/
+/vol/db/
+/vol/phpmyadmin/

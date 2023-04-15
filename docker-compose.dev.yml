@@ -3,10 +3,14 @@ version: "3"
 services:
 
   web:
+    ports:
+      - "8005:80"
     networks:
       dockerdev-proxy:
 
   kibana:
+    ports:
+      - "5601:5601"
     networks:
       dockerdev-proxy:
       default:
@@ -18,6 +22,8 @@ services:
     environment:
       PMA_USER: root
       PMA_PASSWORD: ${DB_ROOT_PASSWORD}
+    ports:
+      - "8040:80"
 
   php-debug:
     build:
