@@ -5,20 +5,12 @@ services:
   web:
     ports:
       - "8005:80"
-    networks:
-      dockerdev-proxy:
 
   kibana:
     ports:
       - "5601:5601"
-    networks:
-      dockerdev-proxy:
-      default:
 
   phpmyadmin:
-    networks:
-      dockerdev-proxy:
-      default:
     environment:
       PMA_USER: root
       PMA_PASSWORD: ${DB_ROOT_PASSWORD}
@@ -36,12 +28,7 @@ services:
       - ./etc/php/settings.ini:/usr/local/etc/php/conf.d/z-settings.ini
       - ./etc/php/linux/settings.ini:/usr/local/etc/php/conf.d/zz-settings.ini
       - ./etc/php/linux/phpd:/usr/local/bin/phpd
-      - ~/.composer:/composer
     working_dir: ${WORKING_DIR}
     environment:
-      COMPOSER_HOME: /composer
+      COMPOSER_HOME: /var/www/var/composer
       PHP_IDE_CONFIG: serverName=${HOST}
-
-networks:
-  dockerdev-proxy:
-    external: true

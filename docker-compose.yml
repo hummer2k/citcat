@@ -53,10 +53,9 @@ services:
     volumes:
       - ${SHARED_DIR}
       - ./etc/php/settings.ini:/usr/local/etc/php/conf.d/z-settings.ini
-      - ~/.composer:/composer
     working_dir: ${WORKING_DIR}
     environment:
-      COMPOSER_HOME: /composer
+      COMPOSER_HOME: /var/www/var/composer
 
   # PHPMYADMIN
   phpmyadmin:
